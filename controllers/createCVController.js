@@ -18,7 +18,7 @@ const getCV = async (req, res) => {
 	const userId = req.user._id;
 	const { id } = req.params;
 
-	if (!userId || !id) throw new customError("IDs missing", codes.BAD_REQUEST);
+	if (!userId || !id) throw new customError("IDs missing", codes.UNAUTHORIZED);
 
 	const cv = await CVModal.findOne({ _id: id, user: userId });
 
@@ -27,4 +27,22 @@ const getCV = async (req, res) => {
 	return res.status(codes.OK).json(cv);
 };
 
-module.exports = { createCV, getCV };
+const getRecentCV = async (req, res) => {
+	const userId = req.user._id;
+	if (!userId) throw new customError("IDs missing", codes.UNAUTHORIZED);
+	const cv = await CVModal.find({ user: userId });
+	return res.status(codes.OK).json(cv);
+};
+
+const editCV = async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const cv = await CVModal.findOneAndUpdate({ _id: id }, req.body);
+		return res.status(codes.OK).json(cv);
+	} catch (error) {
+		return res.status(codes.INTERNAL_SERVER_ERROR).json(error);
+	}
+};
+
+module.exports = { createCV, getCV, getRecentCV, editCV };

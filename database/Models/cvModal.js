@@ -25,6 +25,7 @@ const cvSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "about is missing"],
 	},
+	template: String,
 	workExperience: [
 		{
 			role: {
